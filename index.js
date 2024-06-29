@@ -1,154 +1,98 @@
-// Importações de módulos:
-require("dotenv").config();
-const conn = require("./db/conn");
-const express = require("express");
-const exphbs = require("express-handlebars");
+require('dotenv').config();
+const express = require('express');
+const exphbs = require('express-handlebars');
+const conn = require('./db/conn');
 
-const Usuario = require("./models/Usuario");
-const Cartao = require("./models/Cartao");
-const Jogo = require("./models/Jogo");
+const Usuario = require('./models/Usuario');
+const Cartao = require('./models/Cartao');
+const Jogo = require('./models/Jogo');
+const Conquista = require('./models/Conquista');
 
-Jogo.belongsToMany(Usuario, { through: "aquisicoes" });
-Usuario.belongsToMany(Jogo, { through: "aquisicoes" });
+// Definindo relacionamentos
+Jogo.hasMany(Conquista);
+Conquista.belongsTo(Jogo);
 
-// Instanciação do servidor:
 const app = express();
 
-// Vinculação do Handlebars ao Express:
-app.engine("handlebars", exphbs.engine());
-app.set("view engine", "handlebars");
+// Vinculação do Handlebars ao Express
+app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
 
-// Configurações no express para facilitar a captura
-// de dados recebidos de formulários
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
-
+// Configurações no express para facilitar a captura de dados recebidos de formulários
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.render("home");
+// Rotas principais
+app.get('/', (req, res) => {
+  res.render('home');
 });
 
-app.get("/usuarios", async (req, res) => {
-  const usuarios = await Usuario.findAll({ raw: true });
-
-  res.render("usuarios", { usuarios });
+// Rotas para Jogos
+app.get('/jogos', async (req, res) => {
+  const jogos = await Jogo.findAll({ include: Conquista });
+  res.render('jogos', { jogos });
 });
 
-app.get("/usuarios/novo", (req, res) => {
-  res.render("formUsuario");
+app.get('/jogos/novo', (req, res) => {
+  res.render('formJogo');
 });
 
-app.post("/usuarios/novo", async (req, res) => {
-  const dadosUsuario = {
-    nickname: req.body.nickname,
-    nome: req.body.nome,
+app.post('/jogos/novo', async (req, res) => {
+  const dadosJogo = {
+    titulo: req.body.titulo,
+    descricao: req.body.descricao,
+    precobase: req.body.precobase,
   };
 
-  const usuario = await Usuario.create(dadosUsuario);
-  res.send("Usuário inserido sob o id " + usuario.id);
+  await Jogo.create(dadosJogo);
+  res.redirect('/jogos');
 });
 
-app.get("/usuarios/:id/update", async (req, res) => {
-  const id = parseInt(req.params.id);
-  const usuario = await Usuario.findByPk(id, { raw: true });
+// Rotas para Conquistas
+app.get('/jogos/:id/conquistas', async (req, res) => {
+  const idJogo = parseInt(req.params.id);
+  const jogo = await Jogo.findByPk(idJogo, { include: Conquista });
 
-  res.render("formUsuario", { usuario });
-  // const usuario = Usuario.findOne({
-  //   where: { id: id },
-  //   raw: true,
-  // });
-});
-
-app.post("/usuarios/:id/update", async (req, res) => {
-  const id = parseInt(req.params.id);
-
-  const dadosUsuario = {
-    nickname: req.body.nickname,
-    nome: req.body.nome,
-  };
-
-  const retorno = await Usuario.update(dadosUsuario, { where: { id: id } });
-
-  if (retorno > 0) {
-    res.redirect("/usuarios");
-  } else {
-    res.send("Erro ao atualizar usuário");
+  if (!jogo) {
+    return res.status(404).send('Jogo não encontrado');
   }
+
+  res.render('conquistas', { conquistas: jogo.Conquistas });
 });
 
-app.post("/usuarios/:id/delete", async (req, res) => {
-  const id = parseInt(req.params.id);
+app.get('/jogos/:id/novaConquista', async (req, res) => {
+  const idJogo = parseInt(req.params.id);
+  const jogo = await Jogo.findByPk(idJogo);
 
-  const retorno = await Usuario.destroy({ where: { id: id } });
-
-  if (retorno > 0) {
-    res.redirect("/usuarios");
-  } else {
-    res.send("Erro ao excluir usuário");
+  if (!jogo) {
+    return res.status(404).send('Jogo não encontrado');
   }
+
+  res.render('formConquista', { jogo });
 });
 
-// Rotas para cartões
-
-//Ver cartões do usuário
-app.get("/usuarios/:id/cartoes", async (req, res) => {
-  const id = parseInt(req.params.id);
-  const usuario = await Usuario.findByPk(id, { raw: true });
-
-  const cartoes = await Cartao.findAll({
-    raw: true,
-    where: { UsuarioId: id },
-  });
-
-  res.render("cartoes.handlebars", { usuario, cartoes });
-});
-
-//Formulário de cadastro de cartão
-app.get("/usuarios/:id/novoCartao", async (req, res) => {
-  const id = parseInt(req.params.id);
-  const usuario = await Usuario.findByPk(id, { raw: true });
-
-  res.render("formCartao", { usuario });
-});
-
-//Cadastro de cartão
-app.post("/usuarios/:id/novoCartao", async (req, res) => {
-  const id = parseInt(req.params.id);
-
-  const dadosCartao = {
-    numero: req.body.numero,
-    nome: req.body.nome,
-    codSeguranca: req.body.codSeguranca,
-    UsuarioId: id,
+app.post('/jogos/:id/novaConquista', async (req, res) => {
+  const idJogo = parseInt(req.params.id);
+  const dadosConquista = {
+    titulo: req.body.titulo,
+    descricao: req.body.descricao,
+    JogoId: idJogo,
   };
 
-  await Cartao.create(dadosCartao);
-
-  res.redirect(`/usuarios/${id}/cartoes`);
+  await Conquista.create(dadosConquista);
+  res.redirect(`/jogos/${idJogo}/conquistas`);
 });
 
-app.listen(8000, () => {
-  console.log("Server rodando!");
+// Inicializando o servidor
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Server rodando na porta ${PORT}`);
 });
 
-conn
-  .sync()
+conn.sync()
   .then(() => {
-    console.log("Conectado e sincronizado com o banco de dados!");
+    console.log('Conectado e sincronizado com o banco de dados!');
   })
   .catch((err) => {
-    console.log("Ocorreu um erro: " + err);
+    console.error(`Ocorreu um erro: ${err}`);
   });
-
-// conn
-//   .authenticate()
-//   .then(() => {
-//     console.log("Conectado ao banco de dados com sucesso!");
-//   })
-//   .catch((err) => {
-//     console.log("Ocorreu um erro: " + err);
-//   });

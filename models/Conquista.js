@@ -1,19 +1,19 @@
 const conn = require("../db/conn");
 const { DataTypes } = require("sequelize");
+const Jogo = require("./Jogo");
 
-const Jogo = conn.define("Jogo", {
+const Conquista = conn.define("Conquista", {
   titulo: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   descricao: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  precobase: {
-    type: DataTypes.DOUBLE,
-    allowNull: false,
-  },
 });
 
-module.exports = Jogo;
+Conquista.belongsTo(Jogo);
+Jogo.hasMany(Conquista);
+
+module.exports = Conquista;
