@@ -4,7 +4,6 @@ const exphbs = require('express-handlebars');
 const conn = require('./db/conn');
 
 const Usuario = require('./models/Usuario');
-const Cartao = require('./models/Cartao');
 const Jogo = require('./models/Jogo');
 const Conquista = require('./models/Conquista');
 
@@ -29,8 +28,20 @@ app.get('/', (req, res) => {
 
 // Rotas para Jogos
 app.get('/jogos', async (req, res) => {
-  const jogos = await Jogo.findAll({ include: Conquista });
-  res.render('jogos', { jogos });
+  try {
+    const jogos = await Jogo.findAll({
+      include: {
+        model: Conquista,
+        attributes: ['titulo', 'descricao']
+      },
+      raw: true, // Dados brutos
+      nest: true // Nesting para associações
+    });
+    res.render('jogos', { jogos });
+  } catch (error) {
+    console.error('Erro ao buscar jogos:', error);
+    res.status(500).send('Erro ao buscar jogos');
+  }
 });
 
 app.get('/jogos/novo', (req, res) => {
@@ -38,49 +49,69 @@ app.get('/jogos/novo', (req, res) => {
 });
 
 app.post('/jogos/novo', async (req, res) => {
-  const dadosJogo = {
-    titulo: req.body.titulo,
-    descricao: req.body.descricao,
-    precobase: req.body.precobase,
-  };
+  try {
+    const dadosJogo = {
+      titulo: req.body.titulo,
+      descricao: req.body.descricao,
+      precobase: req.body.precobase,
+    };
 
-  await Jogo.create(dadosJogo);
-  res.redirect('/jogos');
+    await Jogo.create(dadosJogo);
+    res.redirect('/jogos');
+  } catch (error) {
+    console.error('Erro ao criar jogo:', error);
+    res.status(500).send('Erro ao criar jogo');
+  }
 });
 
 // Rotas para Conquistas
 app.get('/jogos/:id/conquistas', async (req, res) => {
-  const idJogo = parseInt(req.params.id);
-  const jogo = await Jogo.findByPk(idJogo, { include: Conquista });
+  try {
+    const idJogo = parseInt(req.params.id);
+    const jogo = await Jogo.findByPk(idJogo, { include: Conquista });
 
-  if (!jogo) {
-    return res.status(404).send('Jogo não encontrado');
+    if (!jogo) {
+      return res.status(404).send('Jogo não encontrado');
+    }
+
+    res.render('conquistas', { conquistas: jogo.Conquistas });
+  } catch (error) {
+    console.error('Erro ao buscar conquistas:', error);
+    res.status(500).send('Erro ao buscar conquistas');
   }
-
-  res.render('conquistas', { conquistas: jogo.Conquistas });
 });
 
 app.get('/jogos/:id/novaConquista', async (req, res) => {
-  const idJogo = parseInt(req.params.id);
-  const jogo = await Jogo.findByPk(idJogo);
+  try {
+    const idJogo = parseInt(req.params.id);
+    const jogo = await Jogo.findByPk(idJogo);
 
-  if (!jogo) {
-    return res.status(404).send('Jogo não encontrado');
+    if (!jogo) {
+      return res.status(404).send('Jogo não encontrado');
+    }
+
+    res.render('formConquista', { jogo });
+  } catch (error) {
+    console.error('Erro ao exibir formulário de conquista:', error);
+    res.status(500).send('Erro ao exibir formulário de conquista');
   }
-
-  res.render('formConquista', { jogo });
 });
 
 app.post('/jogos/:id/novaConquista', async (req, res) => {
-  const idJogo = parseInt(req.params.id);
-  const dadosConquista = {
-    titulo: req.body.titulo,
-    descricao: req.body.descricao,
-    JogoId: idJogo,
-  };
+  try {
+    const idJogo = parseInt(req.params.id);
+    const dadosConquista = {
+      titulo: req.body.titulo,
+      descricao: req.body.descricao,
+      JogoId: idJogo,
+    };
 
-  await Conquista.create(dadosConquista);
-  res.redirect(`/jogos/${idJogo}/conquistas`);
+    await Conquista.create(dadosConquista);
+    res.redirect(`/jogos/${idJogo}/conquistas`);
+  } catch (error) {
+    console.error('Erro ao criar conquista:', error);
+    res.status(500).send('Erro ao criar conquista');
+  }
 });
 
 // Inicializando o servidor
