@@ -65,7 +65,7 @@ app.post('/jogos/novo', async (req, res) => {
 });
 
 // Rotas para Conquistas
-app.get('/jogos/:id/conquistas', async (req, res) => {
+app.get('/jogos/{{this.id}}/novaConquista', async (req, res) => {
   try {
     const idJogo = parseInt(req.params.id);
     const jogo = await Jogo.findByPk(idJogo, { include: Conquista });
@@ -81,7 +81,17 @@ app.get('/jogos/:id/conquistas', async (req, res) => {
   }
 });
 
-app.get('/jogos/:id/novaConquista', async (req, res) => {
+app.get('/usuarios', async (req, res) => {
+  try {
+    const usuarios = await Usuario.findAll({ raw: true });
+    res.render('usuarios', { usuarios });
+  } catch (error) {
+    console.error('Erro ao buscar usuários:', error);
+    res.status(500).send('Erro ao buscar usuários');
+  }
+});
+
+app.get('/jogos/{{this.id}}/novaConquista', async (req, res) => {
   try {
     const idJogo = parseInt(req.params.id);
     const jogo = await Jogo.findByPk(idJogo);
@@ -97,7 +107,7 @@ app.get('/jogos/:id/novaConquista', async (req, res) => {
   }
 });
 
-app.post('/jogos/:id/novaConquista', async (req, res) => {
+app.post('/jogos/{{this.id}}/novaConquista', async (req, res) => {
   try {
     const idJogo = parseInt(req.params.id);
     const dadosConquista = {
@@ -107,7 +117,7 @@ app.post('/jogos/:id/novaConquista', async (req, res) => {
     };
 
     await Conquista.create(dadosConquista);
-    res.redirect(`/jogos/${idJogo}/conquistas`);
+    res.redirect(`/jogos/${idJogo}/conquista`);
   } catch (error) {
     console.error('Erro ao criar conquista:', error);
     res.status(500).send('Erro ao criar conquista');

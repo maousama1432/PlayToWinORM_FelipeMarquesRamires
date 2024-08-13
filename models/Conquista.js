@@ -5,7 +5,7 @@ const Jogo = require("./Jogo");
 const Conquista = conn.define("Conquista", {
   titulo: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   },
   descricao: {
     type: DataTypes.STRING,

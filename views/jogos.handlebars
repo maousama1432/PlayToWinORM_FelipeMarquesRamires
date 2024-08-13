@@ -1,21 +1,26 @@
 <h1>Jogos</h1>
 
-<a href="/jogos/novo">Cadastrar novo jogo</a>
+<a href="/jogos/novo" class="btn btn-primary mb-3">Cadastrar Novo Jogo</a>
 
-<table border="1">
-  <tr>
-    <th>Título</th>
-    <th>Descrição</th>
-    <th>Preço Base</th>
-  </tr>
-  {{#each jogos}}
+<table class="table table-striped">
+  <thead>
     <tr>
-      <td>{{this.titulo}}</td>
-      <td>{{this.descricao}}</td>
-      <td>{{this.precobase}}</td>
-      <td>
-        <a href="/jogos/{{this.id}}/conquistas">Ver Conquistas</a>
-      </td>
+      <th>Título</th>
+      <th>Descrição</th>
+      <th>Preço Base</th>
+      <th>Conquista</th>
     </tr>
-  {{/each}}
+  </thead>
+  <tbody>
+    {{#each jogos}}
+      <tr>
+        <td>{{this.titulo}}</td>
+        <td>{{this.descricao}}</td>
+        <td>{{this.precobase}}</td>
+        <td>
+          <a href="/jogos/{{this.id}}/conquistas" class="btn btn-info btn-sm">Ver Conquistas</a>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
 </table>
