@@ -1,11 +1,10 @@
-<h1>Usuários Cadastrados</h1>
+<h1>Usuários</h1>
 
-<a href="/usuarios/novo" class="btn btn-primary mb-3">Cadastrar Novo Usuário</a>
+<a href="/usuarios/novo" class="btn btn-primary">Cadastrar Usuário</a>
 
-<table class="table table-striped">
+<table class="table table-striped mt-4">
   <thead>
     <tr>
-      <th>ID</th>
       <th>Nickname</th>
       <th>Nome</th>
       <th>Ações</th>
@@ -14,15 +13,13 @@
   <tbody>
     {{#each usuarios}}
       <tr>
-        <td>{{this.id}}</td>
         <td>{{this.nickname}}</td>
         <td>{{this.nome}}</td>
         <td>
-          <a href="/usuarios/{{this.id}}/update" class="btn btn-warning btn-sm">Atualizar</a>
-          <form action="/usuarios/{{this.id}}/delete" method="post" class="d-inline">
-            <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+          <a href="/usuarios/{{this.id}}/update" class="btn btn-warning">Editar</a>
+          <form action="/usuarios/{{this.id}}/delete" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger">Excluir</button>
           </form>
-          <a href="/usuarios/{{this.id}}/cartoes" class="btn btn-info btn-sm">Ver Cartões</a>
         </td>
       </tr>
     {{/each}}

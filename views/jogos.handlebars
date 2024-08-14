@@ -1,14 +1,14 @@
 <h1>Jogos</h1>
 
-<a href="/jogos/novo" class="btn btn-primary mb-3">Cadastrar Novo Jogo</a>
+<a href="/jogos/novo" class="btn btn-primary">Cadastrar Jogo</a>
 
-<table class="table table-striped">
+<table class="table table-striped mt-4">
   <thead>
     <tr>
       <th>Título</th>
       <th>Descrição</th>
       <th>Preço Base</th>
-      <th>Conquista</th>
+      <th>Ações</th>
     </tr>
   </thead>
   <tbody>
@@ -18,7 +18,8 @@
         <td>{{this.descricao}}</td>
         <td>{{this.precobase}}</td>
         <td>
-          <a href="/jogos/{{this.id}}/conquistas" class="btn btn-info btn-sm">Ver Conquistas</a>
+          <a href="/jogos/{{this.id}}/conquistas" class="btn btn-info">Ver Conquistas</a>
+          <a href="/jogos/{{this.id}}/novaConquista" class="btn btn-success">Adicionar Conquista</a>
         </td>
       </tr>
     {{/each}}

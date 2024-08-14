@@ -1,11 +1,6 @@
-{{#if usuario}}
-  <h1>Atualizar Usuário</h1>
-  <form action="/usuarios/{{usuario.id}}/update" method="post" class="mt-4">
-{{else}}
-  <h1>Cadastrar Usuário</h1>
-  <form action="/usuarios/novo" method="post" class="mt-4">
-{{/if}}
+<h1>{{#if usuario}}Atualizar Usuário{{else}}Cadastrar Usuário{{/if}}</h1>
 
+<form action="{{#if usuario}}/usuarios/{{usuario.id}}/update{{else}}/usuarios/novo{{/if}}" method="post" class="mt-4">
   <div class="mb-3">
     <label for="nickname" class="form-label">Nickname</label>
     <input type="text" id="nickname" name="nickname" value="{{usuario.nickname}}" class="form-control" />
@@ -14,7 +9,5 @@
     <label for="nome" class="form-label">Nome</label>
     <input type="text" id="nome" name="nome" value="{{usuario.nome}}" class="form-control" />
   </div>
-  <button type="submit" class="btn btn-success">
-    {{#if usuario}}Salvar{{else}}Cadastrar{{/if}}
-  </button>
+  <button type="submit" class="btn btn-success">{{#if usuario}}Salvar{{else}}Cadastrar{{/if}}</button>
 </form>
