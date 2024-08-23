@@ -1,8 +1,8 @@
-const conn = require("../db/conn");
-const { DataTypes } = require("sequelize");
-const Jogo = require("./Jogo");
+const { DataTypes } = require('sequelize');
+const db = require('../db/conn');
+const Jogo = require('./Jogo');
 
-const Conquista = conn.define("Conquista", {
+const Conquista = db.define('Conquista', {
   titulo: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -12,8 +12,7 @@ const Conquista = conn.define("Conquista", {
     allowNull: false,
   },
 });
-
-Conquista.belongsTo(Jogo);
-Jogo.hasMany(Conquista);
+Jogo.hasMany(Conquista, { foreignKey: 'jogo_id' });
+Conquista.belongsTo(Jogo, { foreignKey: 'jogo_id' });
 
 module.exports = Conquista;
