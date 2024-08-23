@@ -1,17 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PlayToWin</title>
-  <link rel="stylesheet" href="/styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>maousama1432 Eternizados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3eaea;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form-container {
+            width: 400px;
+            padding: 20px;
+            border: 1px solid #000000;
+            border-radius: 10px;
+            background-color: #8d0e0e;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-title {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .btn-submit {
+            width: 100%;
+        }
+        .btn-back {
+            margin-top: 10px;
+        }
+        header {
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            margin-bottom: 20px;
+        }
+        nav a {
+            margin: 0 10px;
+        }
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #003366;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1><a href="/">PlayToWin</a></h1>
-  </header>
-  <main>
-    {{{body}}}
-  </main>
+    <header>
+        <a href="/"><h1>PlayToWin.com</h1></a>
+        <nav>
+            <a href="/usuarios/novo" >Cadastrar Usuários</a>
+            <a href="/jogos/novo" >Cadastrar Jogos</a>
+            <a href="/usuarios" >Usuários</a>
+            <a href="/jogos" >Jogos</a>
+        </nav>
+    </header>
+ 
+        {{{body}}}
+    
 </body>
 </html>
