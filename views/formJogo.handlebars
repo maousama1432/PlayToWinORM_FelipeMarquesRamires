@@ -1,17 +1,20 @@
-<h1>{{#if jogo}}Atualizar Jogo{{else}}Cadastrar Jogo{{/if}}</h1>
-
-<form action="{{#if jogo}}/jogos/{{jogo.id}}/update{{else}}/jogos/novo{{/if}}" method="post" class="mt-4">
-  <div class="mb-3">
-    <label for="titulo" class="form-label">Título</label>
-    <input type="text" id="titulo" name="titulo" value="{{jogo.titulo}}" class="form-control" />
+<div class="container">
+  <div class="form-container">
+    <h2 class="form-title">{{#if jogo}}Editar Jogo{{else}}Cadastro de Jogo{{/if}}</h2>
+    <form action="{{#if jogo}}/jogos/{{jogo.id}}/update{{else}}/jogos/novo{{/if}}" method="post">
+      <div class="mb-3">
+        <label for="titulo" class="form-label">Título:</label>
+        <input type="text" id="titulo" name="titulo" class="form-control" value="{{jogo.titulo}}" />
+      </div>
+      <div class="mb-3">
+        <label for="descricao" class="form-label">Descrição:</label>
+        <input type="text" id="descricao" name="descricao" class="form-control" value="{{jogo.descricao}}" />
+      </div>
+      <div class="mb-3">
+        <label for="precoBase" class="form-label">Preço Base:</label>
+        <input type="number" step="0.01" id="precoBase" name="precoBase" class="form-control" value="{{jogo.precoBase}}" />
+      </div>
+      <button type="submit" class="btn btn-primary btn-submit">{{#if jogo}}Atualizar{{else}}Cadastrar{{/if}} Jogo</button>
+    </form>
   </div>
-  <div class="mb-3">
-    <label for="descricao" class="form-label">Descrição</label>
-    <input type="text" id="descricao" name="descricao" value="{{jogo.descricao}}" class="form-control" />
-  </div>
-  <div class="mb-3">
-    <label for="precobase" class="form-label">Preço Base</label>
-    <input type="number" id="precobase" name="precobase" value="{{jogo.precobase}}" class="form-control" />
-  </div>
-  <button type="submit" class="btn btn-success">{{#if jogo}}Salvar{{else}}Cadastrar{{/if}}</button>
-</form>
+</div>
